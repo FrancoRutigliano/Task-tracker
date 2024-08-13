@@ -41,8 +41,13 @@ func (t *Tasks) NewTask(description string) {
 func (t *Tasks) Load(filename string) error {
 	file, err := os.ReadFile(filename)
 	if err != nil {
-		os.Create("data/tasks.json")
-		fmt.Println("archive created")
+		if errors.Is(err, os.ErrNotExist) {
+			os.Create("data/tasks.json")
+			os.WriteFile(filename, []byte("[]"), 0644)
+			fmt.Println("archive created")
+			return nil
+		}
+		return err
 	}
 
 	if len(file) == 0 {
@@ -50,13 +55,19 @@ func (t *Tasks) Load(filename string) error {
 	}
 
 	if err = json.Unmarshal(file, t); err != nil {
-		return fmt.Errorf("error unmarshaling")
+		return err
 	}
 
 	return nil
 }
 
 func (t *Tasks) Save(filename string) error {
+	data, err := json.MarshalIndent(t, "", "")
+	if err != nil {
+		return err
+	}
+
+	os.WriteFile(filename, data, 0644)
 
 	return nil
 }
