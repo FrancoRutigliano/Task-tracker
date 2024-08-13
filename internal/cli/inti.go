@@ -2,6 +2,7 @@ package cli
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"taskTracker/internal/task"
@@ -16,23 +17,31 @@ func HandleCommand(c []string) {
 	if err := task.Load(filename); err != nil {
 		log.Fatal("error loading tasks: ", err)
 	}
-
 	switch c[0] {
 	case "add":
 		cmd := flag.NewFlagSet("add", flag.ExitOnError)
 		description := cmd.String("description", "", "Task description")
 
-		if len(os.Args) < 3 {
-			log.Fatal("Please provide a task description")
+		cmd.Parse(c[1:])
+
+		if *description == "" || len(os.Args) < 3 {
+			log.Fatalf("Please provide a task description, have: %s", *description)
 		}
 
 		task.NewTask(*description)
+		if err := task.Save(filename); err != nil {
+			log.Fatal("error saving the newTask: ", err)
+		}
+
+		log.Println("Task added succesfully")
 
 	case "exit":
+		fmt.Println("goodbye...")
 		os.Exit(0)
 
 	default:
 		log.Fatalf("Unknown command %v", c[0])
 
 	}
+
 }
