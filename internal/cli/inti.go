@@ -2,15 +2,20 @@ package cli
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"taskTracker/internal/task"
 )
 
+const filename = "data/tasks.json"
+
 func HandleCommand(c []string) {
 
 	task := task.Tasks{}
+
+	if err := task.Load(filename); err != nil {
+		log.Fatal("error loading tasks: ", err)
+	}
 
 	switch c[0] {
 	case "add":
@@ -21,9 +26,7 @@ func HandleCommand(c []string) {
 			log.Fatal("Please provide a task description")
 		}
 
-		result := task.NewTask(*description)
-
-		fmt.Println(result)
+		task.NewTask(*description)
 
 	case "exit":
 		os.Exit(0)
