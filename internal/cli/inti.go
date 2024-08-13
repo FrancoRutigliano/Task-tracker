@@ -35,6 +35,10 @@ func HandleCommand(c []string) {
 
 		log.Println("Task added succesfully")
 
+	case "print":
+
+		task.Print()
+
 	case "exit":
 		fmt.Println("goodbye...")
 		os.Exit(0)

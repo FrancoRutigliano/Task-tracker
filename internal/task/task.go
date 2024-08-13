@@ -71,3 +71,13 @@ func (t *Tasks) Save(filename string) error {
 
 	return nil
 }
+
+func (t *Tasks) Print() {
+	if len(*t) == 0 {
+		fmt.Println("no tasks")
+	} else {
+		for i := 1; i <= len(*t); i++ {
+			fmt.Println()
+		}
+	}
+}
