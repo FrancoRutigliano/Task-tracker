@@ -1,8 +1,12 @@
 package task
 
 import (
+	"encoding/json"
+	"errors"
+	"fmt"
 	"math"
 	"math/rand"
+	"os"
 	"time"
 )
 
@@ -35,9 +39,24 @@ func (t *Tasks) NewTask(description string) {
 }
 
 func (t *Tasks) Load(filename string) error {
+	file, err := os.ReadFile(filename)
+	if err != nil {
+		os.Create("data/tasks.json")
+		fmt.Println("archive created")
+	}
 
+	if len(file) == 0 {
+		return errors.New("eof file")
+	}
+
+	if err = json.Unmarshal(file, t); err != nil {
+		return fmt.Errorf("error unmarshaling")
+	}
+
+	return nil
 }
 
 func (t *Tasks) Save(filename string) error {
 
+	return nil
 }
