@@ -73,6 +73,18 @@ func (t *Tasks) Save(filename string) error {
 	return nil
 }
 
+func (t *Tasks) Update(id int, status string) {
+	for i := range *t {
+		if (*t)[i].Id == id && (*t)[i].Status != status {
+			oldStatus := (*t)[i].Status
+			(*t)[i].Status = status
+			log.Printf("Update task %d - Status %s to %s", (*t)[i].Id, oldStatus, (*t)[i].Status)
+			return
+		}
+		log.Fatal("error to update the task")
+	}
+}
+
 func (t *Tasks) Print(state string) {
 	var filterTask Tasks
 

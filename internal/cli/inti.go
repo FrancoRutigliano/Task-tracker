@@ -35,6 +35,18 @@ func HandleCommand(c []string) {
 
 		log.Println("Task added succesfully")
 
+	case "update":
+		cmd := flag.NewFlagSet("update", flag.ExitOnError)
+		id := cmd.Int("id", 0, "id of the task")
+		status := cmd.String("status", "pending", "status of the task")
+
+		cmd.Parse(c[1:])
+
+		task.Update(*id, *status)
+		if err := task.Save(filename); err != nil {
+			log.Fatal("error saving the new task: ", err)
+		}
+
 	case "print":
 
 		cmd := flag.NewFlagSet("filter", flag.ExitOnError)
