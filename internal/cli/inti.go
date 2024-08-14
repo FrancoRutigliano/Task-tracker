@@ -37,7 +37,12 @@ func HandleCommand(c []string) {
 
 	case "print":
 
-		task.Print()
+		cmd := flag.NewFlagSet("filter", flag.ExitOnError)
+		filter := cmd.String("filter", "", "filter tasks")
+
+		cmd.Parse(c[1:])
+
+		task.Print(*filter)
 
 	case "exit":
 		fmt.Println("goodbye...")
