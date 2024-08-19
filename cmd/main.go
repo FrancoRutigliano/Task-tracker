@@ -1,15 +1,11 @@
 package main
 
 import (
-	"log"
-	"os"
+	"fmt"
 	"taskTracker/internal/cli"
 )
 
 func main() {
-
-	if len(os.Args) < 2 {
-		log.Fatalf("Please try again, you have to provide two arguments, and have %v", len(os.Args))
-	}
-	cli.HandleCommand(os.Args[1:])
+	fmt.Println("Task Tracker")
+	cli.Run()
 }

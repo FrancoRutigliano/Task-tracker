@@ -1,28 +1,50 @@
 package cli
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"taskTracker/internal/task"
 )
 
 const filename = "data/tasks.json"
 
-func HandleCommand(c []string) {
+func Run() {
+	scanner := bufio.NewScanner(os.Stdin)
 
 	task := task.Tasks{}
 
 	if err := task.Load(filename); err != nil {
 		log.Fatal("error loading tasks: ", err)
 	}
-	switch c[0] {
+
+	for {
+		fmt.Print("> ")
+		scanner.Scan()
+
+		input := scanner.Text()
+		if input == "" {
+			continue
+		}
+
+		args := strings.Split(input, " ")
+		command := args[0]
+		HandleCommand(task, command, args[1:])
+	}
+
+}
+
+func HandleCommand(task task.Tasks, command string, args []string) {
+
+	switch command {
 	case "add":
 		cmd := flag.NewFlagSet("add", flag.ExitOnError)
 		description := cmd.String("description", "", "Task description")
 
-		cmd.Parse(c[1:])
+		cmd.Parse(args)
 
 		if *description == "" || len(os.Args) < 3 {
 			log.Fatalf("Please provide a task description, have: %s", *description)
@@ -40,7 +62,7 @@ func HandleCommand(c []string) {
 		id := cmd.Int("id", 0, "id of the task")
 		status := cmd.String("status", "pending", "status of the task")
 
-		cmd.Parse(c[1:])
+		cmd.Parse(args)
 
 		task.Update(*id, *status)
 		if err := task.Save(filename); err != nil {
@@ -52,7 +74,7 @@ func HandleCommand(c []string) {
 		cmd := flag.NewFlagSet("filter", flag.ExitOnError)
 		filter := cmd.String("filter", "", "filter tasks")
 
-		cmd.Parse(c[1:])
+		cmd.Parse(args)
 
 		task.Print(*filter)
 
@@ -61,7 +83,7 @@ func HandleCommand(c []string) {
 		os.Exit(0)
 
 	default:
-		log.Fatalf("Unknown command %v", c[0])
+		log.Fatalf("Unknown command %v", command)
 
 	}
 
