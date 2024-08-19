@@ -46,8 +46,9 @@ func HandleCommand(task task.Tasks, command string, args []string) {
 
 		cmd.Parse(args)
 
-		if *description == "" || len(os.Args) < 3 {
-			log.Fatalf("Please provide a task description, have: %s", *description)
+		if *description == "" {
+			log.Printf("Please provide a task description, have: %s", *description)
+			break
 		}
 
 		task.NewTask(*description)
@@ -66,7 +67,7 @@ func HandleCommand(task task.Tasks, command string, args []string) {
 
 		task.Update(*id, *status)
 		if err := task.Save(filename); err != nil {
-			log.Fatal("error saving the new task: ", err)
+			log.Print("error saving the new task: ", err)
 		}
 
 	case "print":
@@ -83,7 +84,7 @@ func HandleCommand(task task.Tasks, command string, args []string) {
 		os.Exit(0)
 
 	default:
-		log.Fatalf("Unknown command %v", command)
+		log.Print("Unknown command %v", command)
 
 	}
 
