@@ -1,45 +1,24 @@
 package cli
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"log"
 	"os"
-	"strings"
 	"taskTracker/internal/task"
+	"taskTracker/util"
 )
 
 const filename = "data/tasks.json"
 
-func Run() {
-	scanner := bufio.NewScanner(os.Stdin)
-
+func HandleCommand(commands []string) {
+	args := commands[2:]
 	task := task.Tasks{}
 
-	if err := task.Load(filename); err != nil {
-		log.Fatal("error loading tasks: ", err)
-	}
+	err := task.Load(filename)
+	util.LogError(err)
 
-	for {
-		fmt.Print("> ")
-		scanner.Scan()
-
-		input := scanner.Text()
-		if input == "" {
-			continue
-		}
-
-		args := strings.Split(input, " ")
-		command := args[0]
-		HandleCommand(task, command, args[1:])
-	}
-
-}
-
-func HandleCommand(task task.Tasks, command string, args []string) {
-
-	switch command {
+	switch commands[1] {
 	case "add":
 		cmd := flag.NewFlagSet("add", flag.ExitOnError)
 		description := cmd.String("description", "", "Task description")
@@ -52,9 +31,8 @@ func HandleCommand(task task.Tasks, command string, args []string) {
 		}
 
 		task.NewTask(*description)
-		if err := task.Save(filename); err != nil {
-			log.Fatal("error saving the newTask: ", err)
-		}
+		err := task.Save(filename)
+		util.LogError(err)
 
 		log.Println("Task added succesfully")
 
@@ -84,7 +62,7 @@ func HandleCommand(task task.Tasks, command string, args []string) {
 		os.Exit(0)
 
 	default:
-		log.Printf("Unknown command %v", command)
+		log.Printf("Unknown command %v", commands)
 
 	}
 

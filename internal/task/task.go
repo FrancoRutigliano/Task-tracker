@@ -12,28 +12,28 @@ import (
 )
 
 type Task struct {
-	Id          int       `json:"id"`
-	Description string    `json:"description"`
-	Status      string    `json:"status"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	Id          int    `json:"id"`
+	Description string `json:"description"`
+	Status      string `json:"status"`
+	CreatedAt   string `json:"created_at"`
+	UpdatedAt   string `json:"updated_at"`
 }
 
 const (
 	pending    = "pending"
 	complete   = "complete"
-	inProgress = "in progress"
+	inProgress = "in-progress"
 )
 
 type Tasks []Task
 
 func (t *Tasks) NewTask(description string) {
 	task := Task{
-		Id:          rand.Intn(math.MaxInt8),
+		Id:          rand.Intn(math.MaxInt16),
 		Description: description,
 		Status:      pending,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
+		CreatedAt:   time.Now().Format(time.RFC3339),
+		UpdatedAt:   time.Now().Format(time.RFC3339),
 	}
 
 	*t = append(*t, task)
