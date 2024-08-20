@@ -9,8 +9,8 @@ import (
 
 func main() {
 	fmt.Println("Task Tracker")
-	if len(os.Args) > 1 {
-		cli.HandleCommand(os.Args)
+	if len(os.Args) <= 1 {
+		log.Fatal("command not provided")
 	}
-	log.Fatal("command not provided")
+	cli.HandleCommand(os.Args)
 }

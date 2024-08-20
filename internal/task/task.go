@@ -90,10 +90,11 @@ func (t *Tasks) Print(state string) {
 
 	if len(*t) == 0 {
 		fmt.Println("no tasks")
+		return
 	}
 
 	switch state {
-	case "":
+	case "all":
 		filterTask = append(filterTask, *t...)
 	case inProgress:
 		for _, v := range *t {

@@ -2,9 +2,7 @@ package cli
 
 import (
 	"flag"
-	"fmt"
 	"log"
-	"os"
 	"taskTracker/internal/task"
 	"taskTracker/util"
 )
@@ -55,14 +53,15 @@ func HandleCommand(commands []string) {
 
 		cmd.Parse(args)
 
+		if *filter == "" {
+			log.Println("Filter is empty")
+			break
+		}
+
 		task.Print(*filter)
 
-	case "exit":
-		fmt.Println("goodbye...")
-		os.Exit(0)
-
 	default:
-		log.Printf("Unknown command %v", commands)
+		log.Fatalf("Unknown command %v", commands)
 
 	}
 
