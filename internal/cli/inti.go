@@ -50,6 +50,7 @@ func HandleCommand(commands []string) {
 
 		err := task.Delete(*id)
 		util.LogError(err)
+		log.Println("Task deleted succesfully")
 
 	case "print":
 
