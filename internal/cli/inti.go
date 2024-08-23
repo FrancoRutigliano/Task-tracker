@@ -29,8 +29,6 @@ func HandleCommand(commands []string) {
 		}
 
 		task.NewTask(*description)
-		err := task.Save(filename)
-		util.LogError(err)
 
 		log.Println("Task added succesfully")
 
@@ -41,10 +39,17 @@ func HandleCommand(commands []string) {
 
 		cmd.Parse(args)
 
-		task.Update(*id, *status)
-		if err := task.Save(filename); err != nil {
-			log.Print("error saving the new task: ", err)
-		}
+		err := task.Update(*id, *status)
+		util.LogError(err)
+
+	case "delete":
+		cmd := flag.NewFlagSet("delete", flag.ExitOnError)
+		id := cmd.Int("id", 0, "id of the task")
+
+		cmd.Parse(args)
+
+		err := task.Delete(*id)
+		util.LogError(err)
 
 	case "print":
 
@@ -64,5 +69,7 @@ func HandleCommand(commands []string) {
 		log.Fatalf("Unknown command %v", commands)
 
 	}
+	err = task.Save(filename)
+	util.LogError(err)
 
 }

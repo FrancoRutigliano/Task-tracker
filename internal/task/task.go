@@ -73,16 +73,26 @@ func (t *Tasks) Save(filename string) error {
 	return nil
 }
 
-func (t *Tasks) Update(id int, status string) {
+func (t *Tasks) Update(id int, status string) error {
 	for i := range *t {
 		if (*t)[i].Id == id && (*t)[i].Status != status {
 			oldStatus := (*t)[i].Status
 			(*t)[i].Status = status
 			log.Printf("Update task %d - Status %s to %s", (*t)[i].Id, oldStatus, (*t)[i].Status)
-			return
+			return nil
 		}
-		log.Fatal("error to update the task")
 	}
+	return errors.New("error to update the task")
+}
+
+func (t *Tasks) Delete(id int) error {
+	for i := range *t {
+		if (*t)[i].Id == id {
+			*t = append((*t)[:i], (*t)[i+1:]...) // (*t)[...] el puntero a t tiene una precedencia mayor es decir que tiene mayor importancia que []
+			return nil
+		}
+	}
+	return errors.New("error to delete the task")
 }
 
 func (t *Tasks) Print(state string) {
