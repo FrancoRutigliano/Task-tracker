@@ -99,7 +99,7 @@ func (t *Tasks) Print(state string) {
 	var filterTask Tasks
 
 	if len(*t) == 0 {
-		fmt.Println("no tasks")
+		fmt.Println("No hay tareas disponibles.")
 		return
 	}
 
@@ -124,11 +124,19 @@ func (t *Tasks) Print(state string) {
 				filterTask = append(filterTask, v)
 			}
 		}
-
 	default:
-		log.Println("Unknown filter")
+		log.Println("Filtro desconocido")
 		return
 	}
 
-	fmt.Println(filterTask)
+	if len(filterTask) == 0 {
+		fmt.Println("No se encontraron tareas con el estado:", state)
+		return
+	}
+
+	fmt.Printf("Tareas (%s):\n", state)
+	for _, task := range filterTask {
+		fmt.Printf("ID: %d\nDescripción: %s\nEstado: %s\nCreado en: %s\nÚltima actualización: %s\n\n",
+			task.Id, task.Description, task.Status, task.CreatedAt, task.UpdatedAt)
+	}
 }
